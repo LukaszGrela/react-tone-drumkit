@@ -1,6 +1,6 @@
 {
   "name": "01-react-tonejs-drum-kit",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
