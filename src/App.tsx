@@ -1,6 +1,7 @@
 import React from 'react';
 import { Players, start as toneStart } from 'tone';
 import './App.css';
+import { useMount } from './hooks/useMount';
 import Key from './Key/Key';
 
 const instruments = [
@@ -41,14 +42,14 @@ const App: React.FC = (): JSX.Element => {
     }
   };
   // const upHandler = (e: KeyboardEvent): void => {};
-  React.useEffect((): (() => void) => {
+  useMount((): (() => void) => {
     window.addEventListener('keydown', downHandler);
     // window.addEventListener('keyup', upHandler);
     return (): void => {
       window.removeEventListener('keydown', downHandler);
       // window.removeEventListener('keyup', upHandler);
     };
-  }, []);
+  });
 
   return (
     <div className='App'>
