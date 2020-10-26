@@ -1,6 +1,9 @@
 {
   "name": "01-react-tonejs-drum-kit",
   "version": "1.0.0",
+  "author": "Lukasz 'Severiaan' Grela",
+  "license": "MIT",
+  "homepage": "/01",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
