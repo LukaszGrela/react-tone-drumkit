@@ -1,5 +1,12 @@
+html {
+  font-size: 10px;
+  background: url('https://i.imgur.com/b9r5sEL.jpg') bottom center;
+  background-size: cover;
+}
+
 .App {
   text-align: center;
+  min-height: 100vh;
 }
 
 .App-logo {
@@ -7,32 +14,54 @@
   pointer-events: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  min-height: 20vh;
+  background-color: #000a;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: calc(10px + 3vmin);
   color: white;
+}
+
+.App-header p {
+  margin: 1rem auto;
+}
+
+.App-section {
+  min-height: 80vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.keys {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.key {
+  background-color: #FfF9;
+  width: 5rem;
+  height: 5rem;
+  border: #fFf 4px solid;
+  border-radius: 1rem;
+  position: relative;
+  margin: 1rem 1rem;
+}
+
+.key kbd {
+  font-size: 2.5rem;
+  display: flex;
+  justify-content: center;
 }
 
 .App-link {
   color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
