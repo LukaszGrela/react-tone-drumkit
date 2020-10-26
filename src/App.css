@@ -21,7 +21,7 @@ html {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 3vmin);
+  font-size: calc(22px + 3vmin);
   color: white;
 }
 
@@ -47,10 +47,10 @@ html {
 }
 
 .key {
-  background-color: #FfF9;
+  background-color: #fff9;
   width: 5rem;
   height: 5rem;
-  border: #fFf 4px solid;
+  border: #fff 4px solid;
   border-radius: 1rem;
   position: relative;
   margin: 1rem 1rem;
@@ -64,4 +64,14 @@ html {
 
 .App-link {
   color: #61dafb;
+}
+
+.tap-to-start {
+  background: #000a;
+  border: 1rem #fffc solid;
+  border-radius: 20rem;
+  color: white;
+  font-size: 4rem;
+  width: 20rem;
+  height: 20rem;
 }
