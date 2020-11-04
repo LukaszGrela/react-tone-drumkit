@@ -1,86 +1,131 @@
-import React from 'react';
-import { Players, start as toneStart } from 'tone';
-import './App.css';
-import { useMount } from './hooks/useMount';
-import Key from './Key/Key';
+import React, { useEffect } from "react";
+import {
+  Players,
+  start as toneStart,
+  context as toneContext,
+  loaded as toneLoaded,
+} from "tone";
+import "./App.css";
+import { useMount } from "./hooks/useMount";
+import Key from "./Key/Key";
 
-const instruments = [
-  { key: 'A', keyCode: 65, label: 'clap' },
-  { key: 'S', keyCode: 83, label: 'hihat' },
-  { key: 'D', keyCode: 68, label: 'kick' },
-  { key: 'F', keyCode: 70, label: 'openhat' },
-  { key: 'G', keyCode: 71, label: 'boom' },
-  { key: 'H', keyCode: 72, label: 'ride' },
-  { key: 'J', keyCode: 74, label: 'snare' },
-  { key: 'K', keyCode: 75, label: 'tom' },
-  { key: 'L', keyCode: 76, label: 'tink' },
-];
+class Instruments {
+  instruments = [
+    { key: "A", keyCode: 65, label: "clap" },
+    { key: "S", keyCode: 83, label: "hihat" },
+    { key: "D", keyCode: 68, label: "kick" },
+    { key: "F", keyCode: 70, label: "openhat" },
+    { key: "G", keyCode: 71, label: "boom" },
+    { key: "H", keyCode: 72, label: "ride" },
+    { key: "J", keyCode: 74, label: "snare" },
+    { key: "K", keyCode: 75, label: "tom" },
+    { key: "L", keyCode: 76, label: "tink" },
+  ];
+  players: Players | undefined = undefined;
 
-const App: React.FC = (): JSX.Element => {
-  const [initiated, setInitiated] = React.useState(false);
-  const [loading, setLoading] = React.useState(true);
-  const players = new Players(
-    instruments.reduce((acc, instrument) => {
-      return {
-        ...acc,
-        [instrument.key]: `./sound/${instrument.label}.mp3`,
-      };
-    }, {}),
-    (): void => {
-      setLoading(false);
-      players.toDestination();
-    }
-  );
-  const downHandler = (e: KeyboardEvent): void => {
-    const instrument = instruments.find(
-      (needle): boolean => needle.keyCode === e.which
+  load(callback?: () => void): void {
+    this.players = new Players(
+      this.instruments.reduce((acc, instrument) => {
+        return {
+          ...acc,
+          [instrument.key]: `./sound/${instrument.label}.mp3`,
+        };
+      }, {}),
+      (): void => {
+        this.players?.toDestination();
+        callback && callback();
+      }
     );
-    if (instrument) {
-      if (players.has(instrument.key)) {
-        players.player(instrument.key).start();
+  }
+
+  play(instrument: string): void {
+    const found = this.instruments.find(
+      (needle): boolean => `${needle.keyCode}` === instrument
+    );
+    if (found) {
+      if (this.players?.has(found.key)) {
+        this.players?.player(found.key).start();
       }
     }
+  }
+
+  get loaded(): boolean {
+    return this.players?.loaded || false;
+  }
+}
+
+const App: React.FC = (): JSX.Element => {
+  console.log("App");
+  const [initiated, setInitiated] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
+
+  const players = React.useRef<Instruments>(new Instruments());
+
+  toneLoaded()
+    .then((): void => {
+      console.log("Tone.loaded", players.current.loaded);
+    })
+    .catch((reason): void => {
+      console.error(reason);
+    });
+
+  useEffect((): void => {
+    if (initiated) {
+      players.current.load((): void => {
+        setLoading(false);
+      });
+    }
+  }, [initiated, players]);
+
+  const downHandler = (e: KeyboardEvent): void => {
+    players.current.play(`${e.which}`);
   };
   // const upHandler = (e: KeyboardEvent): void => {};
   useMount((): (() => void) => {
-    window.addEventListener('keydown', downHandler);
+    window.addEventListener("keydown", downHandler);
     // window.addEventListener('keyup', upHandler);
     return (): void => {
-      window.removeEventListener('keydown', downHandler);
+      window.removeEventListener("keydown", downHandler);
       // window.removeEventListener('keyup', upHandler);
     };
   });
 
   return (
-    <div className='App'>
-      <header className='App-header'>
+    <div className="App">
+      <header className="App-header">
         <p>Drum Kit</p>
       </header>
 
-      <section className='App-section'>
-        <div className='keys'>
+      <section className="App-section">
+        <div className="keys">
+          <button
+            onClick={() => {
+              console.log("players.loaded", players.current.loaded);
+            }}
+          >
+            Tap to start
+          </button>
           {loading && <p>LOADING...</p>}
           {!loading &&
             initiated &&
-            instruments.map(
+            players.current.instruments.map(
               ({ key, keyCode, label }): JSX.Element => (
                 <Key
                   key={keyCode}
                   keyCode={keyCode}
                   label={label}
                   onClick={(): void => {
-                    if (players.has(key)) {
-                      players.player(key).start();
-                    }
+                    players.current.play(key);
                   }}
                 />
               )
             )}
-          {!loading && !initiated && (
+          {!initiated && (
             <button
-              className='tap-to-start'
+              className="tap-to-start"
               onClick={async () => {
                 await toneStart();
+                toneContext.resume();
                 setInitiated(true);
               }}
             >
